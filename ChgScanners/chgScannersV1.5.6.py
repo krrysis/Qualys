@@ -21,7 +21,7 @@ except ImportError:
     ImageTk = None
 
 # Script version
-SCRIPT_VERSION = "1.5.4"
+SCRIPT_VERSION = "1.5.6"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
@@ -373,24 +373,28 @@ def main_gui():
     # Try iconbitmap first (worked for titlebar in v1.5.1)
     try:
         if os.path.exists(icon_path):
-            root.iconbitmap(icon_path)
+            root.iconbitmap(default=icon_path)  # Use default parameter for robustness
             logger.info("Successfully set iconbitmap")
             print("[INFO] Successfully set iconbitmap")
         else:
             logger.warning(f"Icon file not found: {icon_path}")
             print(f"[WARNING] Icon file not found: {icon_path}")
     except tk.TclError as e:
-        logger.error(f"Failed to set iconbitmap: {e}")
-        print(f"[ERROR] Failed to set iconbitmap: {e}")
+        logger.error(f"Failed to set iconbitmap: {e}. Using default icon.")
+        print(f"[ERROR] Failed to set iconbitmap: {e}. Using default icon.")
     
     # Try iconphoto if PIL is available
     if PIL_AVAILABLE:
         try:
-            img = Image.open(icon_path)
-            photo = ImageTk.PhotoImage(img)
-            root.iconphoto(True, photo)
-            logger.info("Successfully set iconphoto")
-            print("[INFO] Successfully set iconphoto")
+            if os.path.exists(icon_path):
+                img = Image.open(icon_path)
+                photo = ImageTk.PhotoImage(img)
+                root.iconphoto(True, photo)
+                logger.info("Successfully set iconphoto")
+                print("[INFO] Successfully set iconphoto")
+            else:
+                logger.warning(f"Icon file not found for iconphoto: {icon_path}")
+                print(f"[WARNING] Icon file not found for iconphoto: {icon_path}")
         except Exception as e:
             logger.error(f"Failed to set iconphoto: {e}")
             print(f"[ERROR] Failed to set iconphoto: {e}")
