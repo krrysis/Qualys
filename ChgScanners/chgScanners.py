@@ -5,17 +5,30 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import os
 import time
+import sys
 from requests.auth import HTTPBasicAuth
 
 # Script version
-SCRIPT_VERSION = "1.4.0"
+SCRIPT_VERSION = "1.4.1"
 
-# Configure logging
+def get_base_dir():
+    """Get the base directory for file operations (handles PyInstaller executable)."""
+    if getattr(sys, 'frozen', False):
+        # Running as PyInstaller executable
+        base_dir = os.path.dirname(sys.executable)
+    else:
+        # Running as Python script
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    return base_dir
+
+# Configure logging to use the base directory
+base_dir = get_base_dir()
+log_file = os.path.join(base_dir, 'qualys_scanner_update.log')
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('qualys_scanner_update.log'),
+        logging.FileHandler(log_file),
         logging.StreamHandler()
     ]
 )
@@ -257,8 +270,10 @@ def process_url(client, webapp_url, selected_scanner, current_url_index, total_u
 
 def process_csv(client, selected_scanner, batch_size=5, batch_delay=10):
     """Process URLs from target.csv in batches."""
-    csv_file = os.path.join(os.path.dirname(__file__), 'target.csv')
+    base_dir = get_base_dir()
+    csv_file = os.path.join(base_dir, 'target.csv')
     try:
+        logger.info(f"Looking for target.csv at: {csv_file}")
         df = pd.read_csv(csv_file)
         if 'url' not in df.columns:
             raise ValueError("CSV must contain a 'url' column.")
@@ -287,7 +302,7 @@ def process_csv(client, selected_scanner, batch_size=5, batch_delay=10):
                 time.sleep(batch_delay)
         
         # Write results to CSV
-        output_csv = os.path.join(os.path.dirname(__file__), 'scanner_update_results.csv')
+        output_csv = os.path.join(base_dir, 'scanner_update_results.csv')
         results_df = pd.DataFrame(results, columns=['url', 'existing_scanner', 'new_assigned_scanner', 'queried_scanner'])
         results_df.to_csv(output_csv, index=False)
         logger.info(f"Results written to {output_csv}")
@@ -332,11 +347,7 @@ def main():
     
     # Initialize Qualys API client
     base_url = "https://qualysapi.qualys.eu/qps/rest/3.0"
-    username = input("Username?: ")
-    if not username:
-        logger.error("Username cannot be empty.")
-        print("[ERROR] Username cannot be empty.")
-        return
+    username = "santg-qu"
     client = QualysAPIClient(base_url, username)
     
     try:
