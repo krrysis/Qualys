@@ -12,20 +12,14 @@ import threading
 import queue
 import argparse
 from requests.auth import HTTPBasicAuth
-try:
-    from PIL import Image, ImageTk
-    PIL_AVAILABLE = True
-except ImportError:
-    PIL_AVAILABLE = False
-    Image = None
-    ImageTk = None
 
 # Script version
-SCRIPT_VERSION = "1.5.7"
+SCRIPT_VERSION = "1.5.8"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
     if getattr(sys, 'frozen', False):
+        # For PyInstaller, use the executable directory
         base_dir = os.path.dirname(sys.executable)
     else:
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -370,7 +364,7 @@ def main_gui():
     logger.info(f"Attempting to load icon from: {icon_path} (absolute path: {os.path.abspath(icon_path)})")
     print(f"[INFO] Attempting to load icon from: {icon_path} (absolute path: {os.path.abspath(icon_path)})")
     
-    # Use iconbitmap only (as in v1.5.1)
+    # Use iconbitmap with explicit path check
     try:
         if os.path.exists(icon_path):
             root.iconbitmap(icon_path)
