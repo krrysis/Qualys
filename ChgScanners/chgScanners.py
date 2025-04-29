@@ -9,7 +9,7 @@ import sys
 from requests.auth import HTTPBasicAuth
 
 # Script version
-SCRIPT_VERSION = "1.4.1"
+SCRIPT_VERSION = "1.4.2"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
@@ -357,13 +357,17 @@ def main():
     logger.info(f"Starting Qualys Scanner Update Script v{SCRIPT_VERSION}")
     print(f"[INFO] Starting Qualys Scanner Update Script v{SCRIPT_VERSION}")
     
-    # Initialize Qualys API client
-    base_url = "https://qualysapi.qualys.eu/qps/rest/3.0"
+    # Prompt for username
     username = input("Enter Qualys API username: ")
     if not username:
         logger.error("Username cannot be empty.")
         print("[ERROR] Username cannot be empty.")
         return
+    
+    logger.info(f"Username entered: {username}")
+    
+    # Initialize Qualys API client
+    base_url = "https://qualysapi.qualys.eu/qps/rest/3.0"
     client = QualysAPIClient(base_url, username)
     
     try:
