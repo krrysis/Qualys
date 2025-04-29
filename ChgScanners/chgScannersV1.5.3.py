@@ -12,9 +12,16 @@ import threading
 import queue
 import argparse
 from requests.auth import HTTPBasicAuth
+try:
+    from PIL import Image, ImageTk
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+    Image = None
+    ImageTk = None
 
 # Script version
-SCRIPT_VERSION = "1.5.1"
+SCRIPT_VERSION = "1.5.3"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
@@ -62,6 +69,11 @@ class QualysAPIClient:
         """Set password (used by GUI)."""
         self.password = password
         logger.info("Password entered successfully.")
+
+    def prompt_password(self):
+        """Prompt for password in CLI mode."""
+        self.password = getpass.getpass("Enter Qualys API password: ")
+        logger.info("Password entered via CLI.")
 
     def make_api_call(self, endpoint, method='POST', data=None, retries=1):
         """Generic method to make API calls with retry."""
@@ -340,7 +352,7 @@ def run_processing(username, password, selected_scanner, output_text, status_lab
         print_results(results)
         
         logger.info("Script completed successfully.")
-        print("[INFO] Script completed successfully.")
+        print("[INFOfrappe.clear()
         status_label.config(text="Completed", foreground="green")
     except Exception as e:
         logger.error(f"Script failed: {e}")
@@ -355,11 +367,36 @@ def main_gui():
     
     # Set window icon
     icon_path = os.path.join(get_base_dir(), 'qualys.ico')
+    logger.info(f"Attempting to load icon from: {icon_path}")
+    print(f"[INFO] Attempting to load icon from: {icon_path}")
+    
+    # Try iconbitmap first (worked for titlebar in v1.5.1)
     try:
-        root.iconbitmap(icon_path)
+        if os.path.exists(icon_path):
+            root.iconbitmap(icon_path)
+            logger.info("Successfully set iconbitmap")
+            print("[INFO] Successfully set iconbitmap")
+        else:
+            logger.warning(f"Icon file not found: {icon_path}")
+            print(f"[WARNING] Icon file not found: {icon_path}")
     except tk.TclError as e:
-        logger.warning(f"Failed to load icon {icon_path}: {e}")
-        print(f"[WARNING] Failed to load icon {icon_path}: {e}")
+        logger.error(f"Failed to set iconbitmap: {e}")
+        print(f"[ERROR] Failed to set iconbitmap: {e}")
+    
+    # Try iconphoto if PIL is available
+    if PIL_AVAILABLE:
+        try:
+            img = Image.open(icon_path)
+            photo = ImageTk.PhotoImage(img)
+            root.iconphoto(True, photo)
+            logger.info("Successfully set iconphoto")
+            print("[INFO] Successfully set iconphoto")
+        except Exception as e:
+            logger.error(f"Failed to set iconphoto: {e}")
+            print(f"[ERROR] Failed to set iconphoto: {e}")
+    else:
+        logger.warning("PIL not available, skipping iconphoto")
+        print("[WARNING] PIL not available, skipping iconphoto")
     
     # Input frame
     input_frame = ttk.Frame(root, padding="10")
