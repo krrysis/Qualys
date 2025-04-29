@@ -9,3 +9,4 @@ qualys_scanner_update.log
 ChgScanners/dist/qualys_scanner_update.log
 ChgScanners/chgScannersV1.4.0.spec
 ChgScanners/dist/target.csv
+ChgScanners/chgScanners.spec

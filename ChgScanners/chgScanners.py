@@ -322,23 +322,35 @@ def process_csv(client, selected_scanner, batch_size=5, batch_delay=10):
 def print_results(results):
     """Print summary of processing results."""
     print("\nProcessing Summary:")
+    logger.info("\nProcessing Summary:")
     print("-" * 50)
+    logger.info("-" * 50)
     success_count = 0
     for result in results:
         print(f"URL: {result['url']}")
+        logger.info(f"URL: {result['url']}")
         print(f"Existing Scanner: {result['existing_scanner']}")
+        logger.info(f"Existing Scanner: {result['existing_scanner']}")
         print(f"New Assigned Scanner: {result['new_assigned_scanner']}")
+        logger.info(f"New Assigned Scanner: {result['new_assigned_scanner']}")
         print(f"Queried Scanner: {result['queried_scanner']}")
+        logger.info(f"Queried Scanner: {result['queried_scanner']}")
         status = 'SUCCESS' if result['new_assigned_scanner'] == result['queried_scanner'] else 'FAILED'
         print(f"Status: {status}")
+        logger.info(f"Status: {status}")
         print("-" * 50)
+        logger.info("-" * 50)
         if result['new_assigned_scanner'] == result['queried_scanner']:
             success_count += 1
     
     print(f"Total URLs processed: {len(results)}")
+    logger.info(f"Total URLs processed: {len(results)}")
     print(f"Successful updates: {success_count}")
+    logger.info(f"Successful updates: {success_count}")
     print(f"Failed updates: {len(results) - success_count}")
+    logger.info(f"Failed updates: {len(results) - success_count}")
     print(f"Results saved to scanner_update_results.csv")
+    logger.info(f"Results saved to scanner_update_results.csv")
 
 def main():
     # Log script version
