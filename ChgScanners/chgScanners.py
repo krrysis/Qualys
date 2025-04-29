@@ -347,7 +347,11 @@ def main():
     
     # Initialize Qualys API client
     base_url = "https://qualysapi.qualys.eu/qps/rest/3.0"
-    username = "santg-qu"
+    username = input("Enter Qualys API username: ")
+    if not username:
+        logger.error("Username cannot be empty.")
+        print("[ERROR] Username cannot be empty.")
+        return
     client = QualysAPIClient(base_url, username)
     
     try:
