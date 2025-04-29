@@ -14,7 +14,7 @@ import argparse
 from requests.auth import HTTPBasicAuth
 
 # Script version
-SCRIPT_VERSION = "1.5.0"
+SCRIPT_VERSION = "1.5.1"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
@@ -352,6 +352,14 @@ def main_gui():
     root = tk.Tk()
     root.title(f"Qualys Scanner Update v{SCRIPT_VERSION}")
     root.geometry("600x400")
+    
+    # Set window icon
+    icon_path = os.path.join(get_base_dir(), 'qualys.ico')
+    try:
+        root.iconbitmap(icon_path)
+    except tk.TclError as e:
+        logger.warning(f"Failed to load icon {icon_path}: {e}")
+        print(f"[WARNING] Failed to load icon {icon_path}: {e}")
     
     # Input frame
     input_frame = ttk.Frame(root, padding="10")
