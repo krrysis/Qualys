@@ -21,7 +21,7 @@ except ImportError:
     ImageTk = None
 
 # Script version
-SCRIPT_VERSION = "1.5.6"
+SCRIPT_VERSION = "1.5.7"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
@@ -367,40 +367,21 @@ def main_gui():
     
     # Set window icon
     icon_path = os.path.join(get_base_dir(), 'qualys.ico')
-    logger.info(f"Attempting to load icon from: {icon_path}")
-    print(f"[INFO] Attempting to load icon from: {icon_path}")
+    logger.info(f"Attempting to load icon from: {icon_path} (absolute path: {os.path.abspath(icon_path)})")
+    print(f"[INFO] Attempting to load icon from: {icon_path} (absolute path: {os.path.abspath(icon_path)})")
     
-    # Try iconbitmap first (worked for titlebar in v1.5.1)
+    # Use iconbitmap only (as in v1.5.1)
     try:
         if os.path.exists(icon_path):
-            root.iconbitmap(default=icon_path)  # Use default parameter for robustness
+            root.iconbitmap(icon_path)
             logger.info("Successfully set iconbitmap")
             print("[INFO] Successfully set iconbitmap")
         else:
             logger.warning(f"Icon file not found: {icon_path}")
             print(f"[WARNING] Icon file not found: {icon_path}")
     except tk.TclError as e:
-        logger.error(f"Failed to set iconbitmap: {e}. Using default icon.")
-        print(f"[ERROR] Failed to set iconbitmap: {e}. Using default icon.")
-    
-    # Try iconphoto if PIL is available
-    if PIL_AVAILABLE:
-        try:
-            if os.path.exists(icon_path):
-                img = Image.open(icon_path)
-                photo = ImageTk.PhotoImage(img)
-                root.iconphoto(True, photo)
-                logger.info("Successfully set iconphoto")
-                print("[INFO] Successfully set iconphoto")
-            else:
-                logger.warning(f"Icon file not found for iconphoto: {icon_path}")
-                print(f"[WARNING] Icon file not found for iconphoto: {icon_path}")
-        except Exception as e:
-            logger.error(f"Failed to set iconphoto: {e}")
-            print(f"[ERROR] Failed to set iconphoto: {e}")
-    else:
-        logger.warning("PIL not available, skipping iconphoto")
-        print("[WARNING] PIL not available, skipping iconphoto")
+        logger.error(f"Failed to set iconbitmap: {e}. Using default icon. Ensure qualys.ico is a valid .ico file with 16x16 and 32x32 sizes.")
+        print(f"[ERROR] Failed to set iconbitmap: {e}. Using default icon. Ensure qualys.ico is a valid .ico file with 16x16 and 32x32 sizes.")
     
     # Input frame
     input_frame = ttk.Frame(root, padding="10")
