@@ -21,7 +21,7 @@ except ImportError:
     ImageTk = None
 
 # Script version
-SCRIPT_VERSION = "1.5.3"
+SCRIPT_VERSION = "1.5.4"
 
 def get_base_dir():
     """Get the base directory for file operations (handles PyInstaller executable)."""
@@ -352,7 +352,7 @@ def run_processing(username, password, selected_scanner, output_text, status_lab
         print_results(results)
         
         logger.info("Script completed successfully.")
-        print("[INFOfrappe.clear()
+        print("[INFO] Script completed successfully.")
         status_label.config(text="Completed", foreground="green")
     except Exception as e:
         logger.error(f"Script failed: {e}")
