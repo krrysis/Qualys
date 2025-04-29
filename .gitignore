@@ -2,3 +2,9 @@ ChgScanners/target.csv
 dist/target.csv
 ChgScanners/versioninfo.txt
 ChgScanners/build
+ChgScanners/qualys_scanner_update.log
+ChgScanners/scanner_update_results.csv
+scanner_update_results.csv
+dist/scanner_update_results.csv
+qualys_scanner_update.log
+dist/qualys_scanner_update.log
