@@ -14,19 +14,19 @@ import argparse
 from requests.auth import HTTPBasicAuth
 
 # Script version
-SCRIPT_VERSION = "1.5.8"
+SCRIPT_VERSION = "1.5.10"
 
-def get_base_dir():
-    """Get the base directory for file operations (handles PyInstaller executable)."""
+def get_resource_path(filename):
+    """Get the correct path for a resource file (handles PyInstaller bundling)."""
     if getattr(sys, 'frozen', False):
-        # For PyInstaller, use the executable directory
-        base_dir = os.path.dirname(sys.executable)
+        # PyInstaller extracts files to a temporary directory (sys._MEIPASS)
+        base_path = sys._MEIPASS
     else:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-    return base_dir
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, filename)
 
 # Configure logging to use the base directory
-base_dir = get_base_dir()
+base_dir = os.path.dirname(os.path.abspath(__file__)) if not getattr(sys, 'frozen', False) else os.path.dirname(sys.executable)
 log_file = os.path.join(base_dir, 'qualys_scanner_update.log')
 logging.basicConfig(
     level=logging.INFO,
@@ -250,7 +250,7 @@ def process_url(client, webapp_url, selected_scanner, current_url_index, total_u
 
 def process_csv(client, selected_scanner, batch_size=5, batch_delay=10):
     """Process URLs from target.csv in batches."""
-    base_dir = get_base_dir()
+    base_dir = os.path.dirname(os.path.abspath(__file__)) if not getattr(sys, 'frozen', False) else os.path.dirname(sys.executable)
     csv_file = os.path.join(base_dir, 'target.csv')
     try:
         logger.info(f"Looking for target.csv at: {csv_file}")
@@ -360,7 +360,7 @@ def main_gui():
     root.geometry("600x400")
     
     # Set window icon
-    icon_path = os.path.join(get_base_dir(), 'qualys.ico')
+    icon_path = get_resource_path('qualys.ico')
     logger.info(f"Attempting to load icon from: {icon_path} (absolute path: {os.path.abspath(icon_path)})")
     print(f"[INFO] Attempting to load icon from: {icon_path} (absolute path: {os.path.abspath(icon_path)})")
     
