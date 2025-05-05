@@ -248,7 +248,7 @@ def process_url(client, webapp_url, selected_scanner, current_url_index, total_u
             'queried_scanner': 'Error'
         }
 
-def process_csv(client, selected_scanner, batch_size=5, batch_delay=10):
+def process_csv(client, selected_scanner, batch_size=10, batch_delay=5):
     """Process URLs from target.csv in batches."""
     base_dir = os.path.dirname(os.path.abspath(__file__)) if not getattr(sys, 'frozen', False) else os.path.dirname(sys.executable)
     csv_file = os.path.join(base_dir, 'target.csv')
