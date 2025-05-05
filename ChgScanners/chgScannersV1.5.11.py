@@ -14,7 +14,7 @@ import argparse
 from requests.auth import HTTPBasicAuth
 
 # Script version
-SCRIPT_VERSION = "1.5.10"
+SCRIPT_VERSION = "1.5.11"
 
 def get_resource_path(filename):
     """Get the correct path for a resource file (handles PyInstaller bundling)."""
