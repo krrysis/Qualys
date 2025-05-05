@@ -342,7 +342,7 @@ def run_processing(username, password, selected_scanner, output_text, status_lab
         client = QualysAPIClient(base_url, username)
         client.set_password(password)
         
-        results = process_csv(client, selected_scanner, batch_size=5, batch_delay=10)
+        results = process_csv(client, selected_scanner, batch_size=10, batch_delay=5)
         print_results(results)
         
         logger.info("Script completed successfully.")
@@ -464,7 +464,7 @@ def main_cli():
     try:
         client.prompt_password()
         selected_scanner = prompt_scanner_selection()
-        results = process_csv(client, selected_scanner, batch_size=5, batch_delay=10)
+        results = process_csv(client, selected_scanner, batch_size=10, batch_delay=5)
         print_results(results)
         logger.info("Script completed successfully.")
         print("[INFO] Script completed successfully.")
