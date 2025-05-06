@@ -14,7 +14,7 @@ import argparse
 from requests.auth import HTTPBasicAuth
 
 # Script version
-SCRIPT_VERSION = "1.5.12"
+SCRIPT_VERSION = "1.5.13"
 
 def get_resource_path(filename):
     """Get the correct path for a resource file (handles PyInstaller bundling)."""
@@ -166,6 +166,7 @@ def build_update_payload(selected_scanner):
                     <defaultScanner>
                         <type>EXTERNAL</type>
                     </defaultScanner>
+                    <scannerLocked>true</scannerLocked>
                 </WebApp>
             </data>
         </ServiceRequest>"""
@@ -180,6 +181,7 @@ def build_update_payload(selected_scanner):
                             </Tag>
                         </set>
                     </defaultScannerTags>
+                    <scannerLocked>true</scannerLocked>
                 </WebApp>
             </data>
         </ServiceRequest>"""
@@ -191,6 +193,7 @@ def build_update_payload(selected_scanner):
                         <type>INTERNAL</type>
                         <friendlyName>{selected_scanner}</friendlyName>
                     </defaultScanner>
+                    <scannerLocked>true</scannerLocked>
                 </WebApp>
             </data>
         </ServiceRequest>"""
