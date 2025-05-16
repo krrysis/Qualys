@@ -16,3 +16,4 @@ chgScanners/chgScannersGUI.spec
 chgScanners/qualys_scanner_lock_status.log
 ScannerStatus/scanner_lock_status.csv
 chgScanners/logs
+ScannerStatus/logs
