@@ -26,7 +26,7 @@ def get_resource_path(filename):
 
 # Configure logging to use the base directory
 base_dir = os.path.dirname(os.path.abspath(__file__)) if not getattr(sys, 'frozen', False) else os.path.dirname(sys.executable)
-log_file = os.path.join(base_dir, 'qualys_scanner_lock_status.log')
+log_file = os.path.join(base_dir, 'logs/qualys_scanner_lock_status.log')
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
