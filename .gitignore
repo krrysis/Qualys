@@ -13,5 +13,5 @@ ChgScanners/dist/activities
 ChgScanners/chgScanners*.spec
 chgScanners/chgScannersGUI.spec
 chgScanners/qualys_scanner_lock_status.log
-chgScanners/scanner_lock_status.csv
+ScannerStatus/scanner_lock_status.csv
 chgScanners/logs
