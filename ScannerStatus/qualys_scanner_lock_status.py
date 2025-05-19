@@ -192,7 +192,7 @@ def process_url(client, webapp_url, current_url_index, total_urls):
             'scanner_locked': 'Error'
         }
 
-def process_csv(client, batch_size=10, batch_delay=5):
+def process_csv(client, batch_size=10, batch_delay=1):
     """Process URLs from target.csv in batches."""
     base_dir = os.path.dirname(os.path.abspath(__file__)) if not getattr(sys, 'frozen', False) else os.path.dirname(sys.executable)
     csv_file = os.path.join(base_dir, 'target.csv')
@@ -274,7 +274,7 @@ def run_processing(username, password, output_text, status_label):
         client = QualysAPIClient(base_url, username)
         client.set_password(password)
         
-        results = process_csv(client, batch_size=10, batch_delay=5)
+        results = process_csv(client, batch_size=10, batch_delay=1)
         print_results(results)
         
         logger.info("Script completed successfully.")
@@ -378,7 +378,7 @@ def main_cli():
     
     try:
         client.prompt_password()
-        results = process_csv(client, batch_size=10, batch_delay=5)
+        results = process_csv(client, batch_size=10, batch_delay=1)
         print_results(results)
         logger.info("Script completed successfully.")
         print("[INFO] Script completed successfully.")
