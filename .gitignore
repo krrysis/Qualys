@@ -17,3 +17,5 @@ WAS/Scanners/ChgScanners/qualys_scanner_lock_status.log
 WAS/Scanners/ScannerStatus/scanner_lock_status.csv
 WAS/Scanners/ChgScanners/logs
 WAS/Scanners/ScannerStatus/logs
+WAS/AuthRecords/auth_record_details.csv
+WAS/AuthRecords/auth_records.csv

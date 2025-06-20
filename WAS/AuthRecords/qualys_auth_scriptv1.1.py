@@ -4,8 +4,8 @@ import csv
 import getpass
 from urllib.parse import urljoin
 
-# Base URL for Qualys API
-BASE_URL = "https://qualysapi.qualys.eu/qps/rest/3.0"
+# Base URL for Qualys API, including version and trailing slash
+BASE_URL = "https://qualysapi.qualys.eu/qps/rest/3.0/"
 
 # XML payload for fetching auth record IDs
 AUTH_RECORD_XML = """<ServiceRequest>
@@ -97,6 +97,7 @@ def main():
 
     # Step 1: Fetch auth record IDs
     search_url = urljoin(BASE_URL, "search/was/webappauthrecord")
+    print(f"Constructed search URL: {search_url}")  # Debug print
     response = make_api_request(search_url, "post", auth, headers, AUTH_RECORD_XML)
     
     if response is None:
@@ -109,13 +110,14 @@ def main():
         print("No auth records found or parsing failed. Exiting.")
         return
     
-    save_to_csv(auth_records, "auth_records.csv", ["id", "name"])
+    save_to_csv(auth_records, "./auth_records.csv", ["id", "name"])
     
     # Step 2: Fetch details for each auth record
     details = []
     for record in auth_records:
         record_id = record["id"]
         details_url = urljoin(BASE_URL, f"get/was/webappauthrecord/{record_id}")
+        print(f"Constructed details URL: {details_url}")  # Debug print
         response = make_api_request(details_url, "get", auth, headers)
         
         if response is None:
@@ -128,7 +130,7 @@ def main():
     
     # Save auth record details to CSV
     if details:
-        save_to_csv(details, "auth_record_details.csv", ["id", "name", "type", "script_name"])
+        save_to_csv(details, "./auth_record_details.csv", ["id", "name", "type", "script_name"])
     else:
         print("No auth record details retrieved.")
 
