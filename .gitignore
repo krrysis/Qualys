@@ -19,3 +19,4 @@ WAS/Scanners/ChgScanners/logs
 WAS/Scanners/ScannerStatus/logs
 WAS/AuthRecords/auth_record_details.csv
 WAS/AuthRecords/auth_records.csv
+Asset Management & Tagging/qualys_tags_asset_counts.csv

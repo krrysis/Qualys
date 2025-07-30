@@ -8,13 +8,11 @@ from urllib.parse import urljoin
 BASE_URL = "https://qualysapi.qualys.eu/qps/rest/3.0/"
 
 # XML payload for fetching auth record IDs
-
 AUTH_RECORD_XML = """<ServiceRequest>
     <filters>
         <Criteria field="contents" operator="EQUALS">FORM_SELENIUM</Criteria>
     </filters>
 </ServiceRequest>"""
-
 
 def get_credentials():
     """Prompt user for credentials."""
@@ -64,34 +62,40 @@ def save_to_csv(data, filename, fieldnames):
         print(f"Failed to write to CSV: {e}")
 
 def parse_auth_record_details(response_text):
-    """Parse XML response to extract auth record details."""
+    """Parse XML response to extract auth record details including selenium credentials."""
     try:
         root = ET.fromstring(response_text)
         record = root.find(".//WebAppAuthRecord")
-        #lineadd
-        #record2 = root.find(".//WebAppAuthServerRecordField") 
         if record is None:
             return None
-        #lineadd
-        #if record2 is None:
-        #    return None
+
         record_id = record.find("id").text.strip() if record.find("id") is not None else ""
         name_element = record.find("name")
         record_name = name_element.text.strip() if name_element is not None and name_element.text else ""
-        #lineadd
-        #record_username = record2.find("username").text.strip() if record2.find("username") is not None else ""
-        # Type is not explicitly provided in the example; assuming it's related to contents
         record_type = "FORM_SELENIUM"  # Based on the filter used in the first request
-        
+
         selenium_script = record.find(".//seleniumScript/name")
         script_name = selenium_script.text.strip() if selenium_script is not None and selenium_script.text else ""
-        
+
+        # Check for seleniumCreds and extract username if present
+        form_record = record.find(".//formRecord")
+        selenium_creds = form_record.find("seleniumCreds").text.strip().lower() == "true" if form_record is not None and form_record.find("seleniumCreds") is not None else False
+        username = ""
+
+        if selenium_creds:
+            for field in record.findall(".//WebAppAuthFormRecordField"):
+                field_name = field.find("name")
+                if field_name is not None and field_name.text.strip().upper() == "USERNAME":
+                    value = field.find("value")
+                    username = value.text.strip() if value is not None and value.text else ""
+                    break  # Stop after finding the first USERNAME
+
         return {
             "id": record_id,
             "name": record_name,
             "type": record_type,
             "script_name": script_name,
-            
+            "username": username
         }
     except ET.ParseError as e:
         print(f"Failed to parse XML: {e}")
@@ -105,7 +109,7 @@ def main():
 
     # Step 1: Fetch auth record IDs
     search_url = urljoin(BASE_URL, "search/was/webappauthrecord")
-    print(f"Constructed search URL: {search_url}")  # Debug print
+    print(f"Constructed search URL: {search_url}")
     response = make_api_request(search_url, "post", auth, headers, AUTH_RECORD_XML)
     
     if response is None:
@@ -125,7 +129,7 @@ def main():
     for record in auth_records:
         record_id = record["id"]
         details_url = urljoin(BASE_URL, f"get/was/webappauthrecord/{record_id}")
-        print(f"Constructed details URL: {details_url}")  # Debug print
+        print(f"Constructed details URL: {details_url}")
         response = make_api_request(details_url, "get", auth, headers)
         
         if response is None:
